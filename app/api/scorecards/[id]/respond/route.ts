@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { scorecards, questions, responses } from '@/db/schema';
+import { scorecards, questions, responses, tierResults } from '@/db/schema';
 import { generateId } from '@/lib/id';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { createAssessmentAttestationWithEnvDid } from '@/lib/attestation';
+import { buildFairManifest, recordFairManifest } from '@/lib/fair';
 
 interface Answer {
   questionId: string;
@@ -34,11 +36,12 @@ export async function POST(
   }
 
   const body = await req.json();
-  const { answers, name, email, phone } = body as {
+  const { answers, name, email, phone, respondentDid } = body as {
     answers: Answer[];
     name?: string;
     email?: string;
     phone?: string;
+    respondentDid?: string;
   };
 
   if (!Array.isArray(answers)) {
@@ -100,6 +103,7 @@ export async function POST(
     .values({
       id: responseId,
       scorecardId,
+      respondentDid: respondentDid ?? null,
       name: name ?? null,
       email: email ?? null,
       phone: phone ?? null,
@@ -109,6 +113,58 @@ export async function POST(
       completedAt: new Date(),
     })
     .returning();
+
+  // Fire-and-forget integrations — never block the user response
+  (async () => {
+    try {
+      // Fetch tier result for attestation
+      let tierResult = null;
+      if (tierName) {
+        const [tr] = await db
+          .select()
+          .from(tierResults)
+          .where(
+            and(
+              eq(tierResults.scorecardId, scorecardId),
+              eq(tierResults.tierName, tierName)
+            )
+          );
+        tierResult = tr ?? null;
+      }
+
+      let attestationId: string | undefined;
+
+      // Create attestation if respondent has a DID
+      if (respondentDid) {
+        const attestationResult = await createAssessmentAttestationWithEnvDid(
+          scorecard.creatorDid,
+          respondentDid,
+          {
+            scorecardId,
+            scorecardTitle: scorecard.title,
+            totalScore,
+            totalPossible,
+            tierName: tierName ?? 'Unknown',
+          }
+        );
+        if (attestationResult) {
+          attestationId = attestationResult.attestationId;
+        }
+      }
+
+      // Record .fair manifest
+      await recordFairManifest(
+        buildFairManifest(
+          scorecardId,
+          scorecard.creatorDid,
+          respondentDid,
+          attestationId
+        )
+      );
+    } catch (err) {
+      console.error('Integration error (respond):', err);
+    }
+  })();
 
   return NextResponse.json({
     responseId: response.id,

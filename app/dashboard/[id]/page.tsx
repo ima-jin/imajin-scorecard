@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { Scorecard, Response } from '@/db/schema';
+import EmbedSnippet from '@/components/EmbedSnippet';
 
 interface ExtendedResponse extends Response {
   answers: Array<{ questionId: string; value: string; points: number }>;
@@ -19,6 +20,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'date' | 'score' | 'tier'>('date');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showEmbed, setShowEmbed] = useState(false);
 
   useEffect(() => {
     fetch('/api/auth/session')
@@ -129,6 +131,12 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
           </div>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => setShowEmbed(!showEmbed)}
+              className="px-4 py-2 border border-gray-700 text-gray-300 hover:border-gray-500 rounded-lg text-sm"
+            >
+              {showEmbed ? 'Hide Embed' : 'Embed'}
+            </button>
+            <button
               onClick={exportCSV}
               disabled={responses.length === 0}
               className="px-4 py-2 border border-gray-700 text-gray-300 hover:border-gray-500 rounded-lg text-sm disabled:opacity-50"
@@ -143,6 +151,15 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
             </Link>
           </div>
         </div>
+
+        {showEmbed && scorecard && (
+          <div className="mb-8">
+            <EmbedSnippet
+              scorecardId={scorecard.id}
+              appUrl={typeof window !== 'undefined' ? window.location.origin : ''}
+            />
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid sm:grid-cols-4 gap-4 mb-8">
