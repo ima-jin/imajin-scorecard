@@ -16,5 +16,5 @@ export default async function PublicLandingPage({ params }: { params: { id: stri
     notFound();
   }
 
-  return <LandingPage scorecard={scorecard} />;
+  return <LandingPage scorecard={scorecard as any} />;
 }

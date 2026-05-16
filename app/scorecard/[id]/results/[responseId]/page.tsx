@@ -69,9 +69,9 @@ export default async function ResultsPage({ params }: PageProps) {
           />
         ) : (
           <ResultsDisplay
-            response={response}
-            scorecard={scorecard}
-            tierResult={tierResult}
+            response={response as any}
+            scorecard={scorecard as any}
+            tierResult={tierResult as any}
           />
         )}
       </div>

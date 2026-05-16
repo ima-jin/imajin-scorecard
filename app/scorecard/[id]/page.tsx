@@ -35,7 +35,7 @@ export default async function ScorecardPage({ params }: PageProps) {
             <p className="text-gray-400">{scorecard.description}</p>
           )}
         </div>
-        <QuizFlow scorecard={scorecard} questions={qs as any} />
+        <QuizFlow scorecard={scorecard as any} questions={qs as any} />
       </div>
     </main>
   );
