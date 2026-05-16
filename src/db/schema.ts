@@ -6,6 +6,7 @@ export const scorecards = pgTable('scorecards', {
   creatorDid: text('creator_did').notNull(),                 // Owner DID
   title: text('title').notNull(),
   description: text('description'),
+  slug: text('slug'),                                         // Custom URL slug (optional)
   status: text('status').notNull().default('draft'),          // draft, published, closed
   
   // Scoring config
@@ -26,6 +27,7 @@ export const scorecards = pgTable('scorecards', {
 }, (table) => ({
   creatorIdx: index('idx_scorecards_creator').on(table.creatorDid),
   statusIdx: index('idx_scorecards_status').on(table.status),
+  slugIdx: index('idx_scorecards_slug').on(table.slug),
 }));
 
 // Questions — individual questions within a scorecard

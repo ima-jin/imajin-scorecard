@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/db';
 import { scorecards, questions } from '@/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { eq, asc, or } from 'drizzle-orm';
 import QuizFlow from '@/components/QuizFlow';
 
 interface PageProps {
@@ -11,10 +11,11 @@ interface PageProps {
 export default async function ScorecardPage({ params }: PageProps) {
   const { id } = params;
 
+  // Look up by ID or slug
   const [scorecard] = await db
     .select()
     .from(scorecards)
-    .where(eq(scorecards.id, id));
+    .where(or(eq(scorecards.id, id), eq(scorecards.slug, id)));
 
   if (!scorecard || scorecard.status !== 'published') {
     notFound();
@@ -23,7 +24,7 @@ export default async function ScorecardPage({ params }: PageProps) {
   const qs = await db
     .select()
     .from(questions)
-    .where(eq(questions.scorecardId, id))
+    .where(eq(questions.scorecardId, scorecard.id))
     .orderBy(asc(questions.sortOrder));
 
   return (

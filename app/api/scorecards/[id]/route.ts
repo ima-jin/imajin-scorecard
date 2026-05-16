@@ -69,6 +69,7 @@ export async function PATCH(
     status,
     tiers,
     landingConfig,
+    slug,
     leadGatePosition,
     requireEmail,
     requirePhone,
@@ -77,6 +78,7 @@ export async function PATCH(
   const update: Record<string, unknown> = { updatedAt: new Date() };
   if (title !== undefined) update.title = title;
   if (description !== undefined) update.description = description;
+  if (slug !== undefined) update.slug = slug;
   if (status !== undefined) update.status = status;
   if (tiers !== undefined) update.tiers = tiers;
   if (landingConfig !== undefined) update.landingConfig = landingConfig;

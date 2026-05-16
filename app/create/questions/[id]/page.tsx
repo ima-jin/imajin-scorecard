@@ -22,6 +22,13 @@ export default function QuestionEditorPage({ params }: { params: { id: string } 
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
 
+  // Scorecard metadata editing
+  const [editTitle, setEditTitle] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editSlug, setEditSlug] = useState('');
+  const [savingMeta, setSavingMeta] = useState(false);
+  const [metaSaved, setMetaSaved] = useState(false);
+
   // New question form
   const [text, setText] = useState('');
   const [type, setType] = useState<'yes_no' | 'multiple_choice' | 'open_text'>('yes_no');
@@ -56,6 +63,9 @@ export default function QuestionEditorPage({ params }: { params: { id: string } 
           return;
         }
         setScorecard(sc);
+        setEditTitle(sc.title || '');
+        setEditDescription(sc.description || '');
+        setEditSlug((sc as any).slug || '');
         if (sc.questions) setQuestions(sc.questions);
         setLoading(false);
       })
@@ -185,10 +195,70 @@ export default function QuestionEditorPage({ params }: { params: { id: string } 
   return (
     <main className="min-h-screen bg-gray-950 text-white">
       <div className="max-w-4xl mx-auto px-6 py-10">
+        {/* Scorecard Metadata */}
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-8">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Scorecard Details</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Title</label>
+              <input
+                value={editTitle}
+                onChange={e => { setEditTitle(e.target.value); setMetaSaved(false); }}
+                className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Description</label>
+              <textarea
+                value={editDescription}
+                onChange={e => { setEditDescription(e.target.value); setMetaSaved(false); }}
+                rows={2}
+                className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none resize-none"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Custom URL slug <span className="text-gray-600">(optional)</span></label>
+              <div className="flex items-center gap-0">
+                <span className="px-3 py-2 bg-gray-800 border border-r-0 border-gray-700 rounded-l-lg text-sm text-gray-500">{typeof window !== 'undefined' ? window.location.origin : ''}/scorecard/</span>
+                <input
+                  value={editSlug}
+                  onChange={e => { setEditSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')); setMetaSaved(false); }}
+                  placeholder={id}
+                  className="flex-1 bg-gray-950 border border-gray-700 rounded-r-lg px-3 py-2 text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={async () => {
+                  setSavingMeta(true);
+                  const body: any = { title: editTitle, description: editDescription };
+                  if (editSlug) body.slug = editSlug;
+                  const res = await fetch(`/api/scorecards/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                  });
+                  setSavingMeta(false);
+                  if (res.ok) {
+                    setMetaSaved(true);
+                    const updated = await res.json();
+                    setScorecard(updated);
+                  }
+                }}
+                disabled={savingMeta}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-medium rounded-lg text-sm disabled:opacity-50 transition-colors"
+              >
+                {savingMeta ? 'Saving…' : metaSaved ? '✓ Saved' : 'Save Details'}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold">Questions</h1>
-            <p className="text-gray-400 text-sm mt-1">{scorecard?.title}</p>
+            <p className="text-gray-400 text-sm mt-1">{editTitle || scorecard?.title}</p>
           </div>
           <div className="flex items-center gap-3">
             <Link

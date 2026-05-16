@@ -105,8 +105,8 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-4">
             {scorecards.map(sc => (
-              <div key={sc.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors">
-                <div className="flex items-start justify-between gap-4">
+              <div key={sc.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition-colors overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       {statusBadge(sc.status)}
@@ -119,7 +119,7 @@ export default function Dashboard() {
                       <p className="text-gray-400 text-sm mt-1 truncate">{sc.description}</p>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
                     <Link
                       href={`/create/questions/${sc.id}`}
                       className="px-3 py-1.5 border border-gray-700 text-gray-300 hover:border-gray-500 rounded-lg text-sm transition-colors"
