@@ -40,7 +40,7 @@ export default async function EmbedScorecardPage({ params }: PageProps) {
             <p className="text-gray-400 text-sm">{scorecard.description}</p>
           )}
         </div>
-        <QuizFlow scorecard={scorecard} questions={qs} />
+        <QuizFlow scorecard={scorecard} questions={qs as any} />
       </div>
     </main>
   );
