@@ -43,8 +43,9 @@ export default function Dashboard() {
     }
   };
 
-  const copyLink = (id: string) => {
-    const url = `${window.location.origin}/scorecard/${id}/landing`;
+  const copyLink = (sc: Scorecard) => {
+    const slug = (sc as any).slug || sc.id;
+    const url = `${window.location.origin}/scorecard/${slug}/landing`;
     navigator.clipboard.writeText(url);
     alert('Link copied to clipboard!');
   };
@@ -135,7 +136,7 @@ export default function Dashboard() {
                       Results
                     </Link>
                     <button
-                      onClick={() => copyLink(sc.id)}
+                      onClick={() => copyLink(sc)}
                       className="px-3 py-1.5 border border-gray-700 text-gray-300 hover:border-gray-500 rounded-lg text-sm transition-colors"
                       title="Copy Link"
                     >
