@@ -48,7 +48,7 @@ export async function GET(
       String(r.totalScore ?? ''),
       r.tierName ?? '',
       JSON.stringify(r.answers),
-      new Date(r.createdAt).toISOString(),
+      r.createdAt ? new Date(r.createdAt).toISOString() : '',
     ]);
     const csv = [
       headers.join(','),
