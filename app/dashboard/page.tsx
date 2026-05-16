@@ -111,7 +111,7 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2 mb-1">
                       {statusBadge(sc.status)}
                       <span className="text-xs text-gray-500">
-                        {new Date(sc.createdAt).toLocaleDateString()}
+                        {sc.createdAt ? new Date(sc.createdAt).toLocaleDateString() : "—"}
                       </span>
                     </div>
                     <h3 className="text-lg font-semibold text-white truncate">{sc.title}</h3>

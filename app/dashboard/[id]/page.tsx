@@ -74,7 +74,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
     switch (sortBy) {
       case 'score': return (b.totalScore ?? 0) - (a.totalScore ?? 0);
       case 'tier': return (a.tierName ?? '').localeCompare(b.tierName ?? '');
-      default: return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      default: return new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
     }
   });
 
@@ -100,7 +100,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
       r.phone ?? '',
       String(r.totalScore ?? ''),
       r.tierName ?? '',
-      new Date(r.createdAt).toISOString(),
+      r.createdAt ? new Date(r.createdAt).toISOString() : "",
       JSON.stringify(r.answers),
     ]);
     const csv = [headers.join(','), ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))].join('\n');
@@ -264,7 +264,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
                         )}
                       </td>
                       <td className="px-5 py-3 text-sm text-gray-500">
-                        {new Date(r.createdAt).toLocaleDateString()}
+                        {r.createdAt ? new Date(r.createdAt).toLocaleDateString() : "—"}
                       </td>
                     </tr>
                     {expandedId === r.id && (
