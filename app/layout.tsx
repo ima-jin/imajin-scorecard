@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import EmbedAwareHeader from '@/components/EmbedAwareHeader';
 
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-950 text-white">
-        <EmbedAwareHeader />
+        <Suspense>
+          <EmbedAwareHeader />
+        </Suspense>
         <div className="pt-14">
           {children}
         </div>
