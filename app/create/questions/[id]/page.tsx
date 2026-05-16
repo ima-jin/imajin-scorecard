@@ -223,7 +223,7 @@ export default function QuestionEditorPage({ params }: { params: { id: string } 
                       {!q.isRequired && <span className="px-1.5 py-0.5 bg-gray-800 text-gray-500 text-xs rounded">optional</span>}
                     </div>
                     <p className="text-white font-medium">{q.text}</p>
-                    {q.options && (q.options as QuestionOption[]).length > 0 && (
+                    {q.options && (q.options as QuestionOption[]).length > 0 ? (
                       <div className="flex flex-wrap gap-2 mt-2">
                         {(q.options as QuestionOption[]).map((o, idx) => (
                           <span key={idx} className="px-2 py-1 bg-gray-950 border border-gray-800 rounded text-xs text-gray-400">
@@ -231,7 +231,7 @@ export default function QuestionEditorPage({ params }: { params: { id: string } 
                           </span>
                         ))}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <button
