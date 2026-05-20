@@ -284,11 +284,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
                               Phone: <span className="text-white">{r.phone}</span>
                             </div>
                           )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colSpan={5} className="px-5 py-3 bg-gray-950 border-b border-gray-800/50">
-                          <div className="flex justify-end">
+                          <div className="flex justify-end mt-4 pt-3 border-t border-gray-800/50">
                             {deletingId === r.id ? (
                               <div className="flex items-center gap-3">
                                 <span className="text-sm text-red-400">Delete this response?</span>
@@ -301,7 +297,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
                                         setResponses(prev => prev.filter(resp => resp.id !== r.id));
                                         setExpandedId(null);
                                       }
-                                    } catch {}
+                                    } catch (err) { /* ignore */ }
                                     setDeletingId(null);
                                   }}
                                   className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
