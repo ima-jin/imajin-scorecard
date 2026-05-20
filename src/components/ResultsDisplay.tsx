@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import ContactPreferenceCapture from './ContactPreferenceCapture';
 
 interface Insight {
   title: string;
@@ -31,6 +32,7 @@ interface ResultsDisplayProps {
   response: ResponseData;
   scorecard: Scorecard;
   tierResult: TierResult | null;
+  responseId?: string;
 }
 
 function getTierColor(scorecard: Scorecard, tierName: string | null): string {
@@ -60,7 +62,7 @@ function getNextStepStyles(type: string | null): string {
   }
 }
 
-export default function ResultsDisplay({ response, scorecard, tierResult }: ResultsDisplayProps) {
+export default function ResultsDisplay({ response, scorecard, tierResult, responseId }: ResultsDisplayProps) {
   const totalScore = response.totalScore ?? 0;
   const totalPossible = scorecard.totalPossiblePoints ?? 100;
   const tierName = response.tierName;
@@ -76,6 +78,9 @@ export default function ResultsDisplay({ response, scorecard, tierResult }: Resu
     label?: string;
     description?: string;
   };
+
+  const hasContactInfo = !!(response as any).email || !!(response as any).phone;
+  const isResourceLink = tierResult?.nextStepType === 'resource' || tierResult?.nextStepType === 'content';
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -147,7 +152,15 @@ export default function ResultsDisplay({ response, scorecard, tierResult }: Resu
       )}
 
       {/* Next Steps CTA */}
-      {nextStepConfig.url && (
+      {tierResult?.nextStepType && !isResourceLink && responseId && !hasContactInfo && (
+        <ContactPreferenceCapture
+          scorecardId={scorecard.id}
+          responseId={responseId}
+          tierResult={tierResult}
+        />
+      )}
+
+      {nextStepConfig.url && isResourceLink && (
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8 text-center">
           {nextStepConfig.description && (
             <p className="text-gray-400 text-sm mb-4">{nextStepConfig.description}</p>

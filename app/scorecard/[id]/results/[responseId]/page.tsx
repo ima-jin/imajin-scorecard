@@ -72,6 +72,7 @@ export default async function ResultsPage({ params }: PageProps) {
             response={response as any}
             scorecard={scorecard as any}
             tierResult={tierResult as any}
+            responseId={responseId}
           />
         )}
       </div>

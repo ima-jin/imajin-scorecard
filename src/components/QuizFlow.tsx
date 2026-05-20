@@ -132,17 +132,17 @@ export default function QuizFlow({ scorecard, questions }: QuizFlowProps) {
 
         {currentQuestion.type === 'yes_no' && (
           <div className="flex gap-4">
-            {['yes', 'no'].map((val) => (
+            {(currentQuestion.options ?? []).map((opt: Option) => (
               <button
-                key={val}
-                onClick={() => handleAnswer(currentQuestion.id, val)}
+                key={opt.value}
+                onClick={() => handleAnswer(currentQuestion.id, opt.value)}
                 className={`flex-1 py-3 px-4 rounded-lg font-medium transition-colors border ${
-                  answers[currentQuestion.id] === val
+                  answers[currentQuestion.id] === opt.value
                     ? 'bg-amber-500 text-black border-amber-500'
                     : 'bg-gray-800 text-white border-gray-700 hover:border-gray-600'
                 }`}
               >
-                {val.charAt(0).toUpperCase() + val.slice(1)}
+                {opt.label}
               </button>
             ))}
           </div>

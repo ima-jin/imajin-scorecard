@@ -96,6 +96,11 @@ export async function POST(
     }
   }
 
+  // Update scorecard totalPossiblePoints if it changed
+  if (totalPossible !== scorecard.totalPossiblePoints) {
+    await db.update(scorecards).set({ totalPossiblePoints: totalPossible }).where(eq(scorecards.id, scorecardId));
+  }
+
   const responseId = generateId('resp');
 
   const [response] = await db
