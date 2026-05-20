@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { Scorecard, Response } from '@/db/schema';
@@ -246,9 +246,8 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
               </thead>
               <tbody>
                 {sortedResponses.map(r => (
-                  <>
+                  <React.Fragment key={r.id}>
                     <tr
-                      key={r.id}
                       onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
                       className="border-b border-gray-800/50 hover:bg-gray-800/50 cursor-pointer transition-colors"
                     >
@@ -331,7 +330,7 @@ export default function LeadManagementPage({ params }: { params: { id: string } 
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
