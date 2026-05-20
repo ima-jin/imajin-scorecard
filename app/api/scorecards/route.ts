@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       title,
       description: description ?? null,
       tiers: tiers ?? [],
-      leadGatePosition: leadGatePosition ?? 'after_quiz',
+      leadGatePosition: leadGatePosition === 'none' ? null : (leadGatePosition ?? 'after_quiz'),
       requireEmail: requireEmail ?? true,
       requirePhone: requirePhone ?? false,
       createdAt: now,

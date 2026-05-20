@@ -30,7 +30,7 @@ export default function CreateScorecardPage() {
     { name: 'Intermediate', minScore: 34, maxScore: 66, color: 'amber', label: 'On Your Way' },
     { name: 'Advanced', minScore: 67, maxScore: 100, color: 'green', label: 'Expert Level' },
   ]);
-  const [leadGatePosition, setLeadGatePosition] = useState<'after_quiz' | 'before_quiz'>('after_quiz');
+  const [leadGatePosition, setLeadGatePosition] = useState<'after_quiz' | 'before_quiz' | 'none'>('after_quiz');
   const [requireEmail, setRequireEmail] = useState(true);
   const [requirePhone, setRequirePhone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -216,7 +216,18 @@ export default function CreateScorecardPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">When to capture lead info</label>
-                <div className="flex gap-4">
+                <div className="flex gap-4 flex-wrap">
+                  <label className="flex items-center gap-2 bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 cursor-pointer hover:border-gray-600">
+                    <input
+                      type="radio"
+                      name="leadGate"
+                      value="none"
+                      checked={leadGatePosition === 'none'}
+                      onChange={() => setLeadGatePosition('none')}
+                      className="accent-amber-500"
+                    />
+                    <span className="text-sm text-gray-300">No gate (ask after results)</span>
+                  </label>
                   <label className="flex items-center gap-2 bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 cursor-pointer hover:border-gray-600">
                     <input
                       type="radio"
@@ -226,7 +237,7 @@ export default function CreateScorecardPage() {
                       onChange={() => setLeadGatePosition('after_quiz')}
                       className="accent-amber-500"
                     />
-                    <span className="text-sm text-gray-300">After quiz (show results first)</span>
+                    <span className="text-sm text-gray-300">After quiz (gate results)</span>
                   </label>
                   <label className="flex items-center gap-2 bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 cursor-pointer hover:border-gray-600">
                     <input

@@ -18,7 +18,7 @@ export const scorecards = pgTable('scorecards', {
   landingConfig: jsonb('landing_config').default({}),         // { hook, valueProps, credibility, cta }
   
   // Lead capture config
-  leadGatePosition: text('lead_gate_position').notNull().default('after_quiz'), // before_quiz, after_quiz
+  leadGatePosition: text('lead_gate_position').default('after_quiz'), // before_quiz, after_quiz, or null for none
   requireEmail: boolean('require_email').notNull().default(true),
   requirePhone: boolean('require_phone').notNull().default(false),
   
