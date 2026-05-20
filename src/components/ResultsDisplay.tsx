@@ -152,7 +152,7 @@ export default function ResultsDisplay({ response, scorecard, tierResult, respon
       )}
 
       {/* Next Steps CTA */}
-      {tierResult?.nextStepType && !isResourceLink && responseId && !hasContactInfo && (
+      {responseId && !hasContactInfo && !isResourceLink && (
         <ContactPreferenceCapture
           scorecardId={scorecard.id}
           responseId={responseId}
