@@ -1,10 +1,19 @@
 import postgres from "postgres";
 
-const SOURCE_DB = process.env.SOURCE_DB || "postgresql://imajin:qXSzu75yD6PuFJQO51dFdMoMroUBMqqY@localhost:5432/imajin_prod";
-const TARGET_DB = process.env.TARGET_DB || "postgresql://imajin_dev:uwbuHZkFh2jJfeuqUk3lI9ENOfMhDNvD@localhost:5432/scorecard_dev";
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value || !value.trim()) {
+    console.error(`Missing required environment variable: ${name}`);
+    process.exit(1);
+  }
+  return value;
+}
 
-const source = postgres(SOURCE_DB);
-const target = postgres(TARGET_DB);
+const SOURCE_DATABASE_URL = requireEnv("SOURCE_DATABASE_URL");
+const TARGET_DATABASE_URL = requireEnv("TARGET_DATABASE_URL");
+
+const source = postgres(SOURCE_DATABASE_URL);
+const target = postgres(TARGET_DATABASE_URL);
 
 // Fetch dykil survey
 const [survey] = await source`SELECT * FROM dykil.surveys WHERE id = ${"survey_ai_readiness_001"}`;

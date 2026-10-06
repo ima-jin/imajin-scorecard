@@ -31,6 +31,16 @@ Tables:
 4. Run `pnpm db:push` to create tables
 5. Run `pnpm dev`
 
+## Migrating from Dykil
+
+`scripts/migrate-from-dykil.mjs` reads connection strings from the environment (nothing is stored in the repo). Run:
+
+```
+SOURCE_DATABASE_URL=<dykil db url> TARGET_DATABASE_URL=<scorecard db url> node scripts/migrate-from-dykil.mjs
+```
+
+The script exits with an error naming the variable if either is unset.
+
 ## Auth Flow
 
 Uses Sign in with Imajin:
